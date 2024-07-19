@@ -1,8 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib import auth
-# from .models import Users
+from home.models import Teachers
+from .forms import TeacherForm
+
 
 
 def teacher(request):
@@ -49,3 +51,37 @@ def register(request):
             return redirect('register')
     else:
         return render(request,"auth/regester.html")
+
+
+def create_teacher(request):
+    if request.method == 'POST':
+        form = TeacherForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('teacher_list')  # 'teacher_list' - o'qituvchilar ro'yxati sahifasi
+    else:
+        form = TeacherForm()
+    return render(request, 'createteacher.html', {'form': form})
+
+
+def update_teacher(request, pk):
+    teacher = get_object_or_404(Teachers, pk=pk)
+    if request.method == 'POST':
+        form = TeacherForm(request.POST, request.FILES, instance=teacher)
+        if form.is_valid():
+            form.save()
+            return redirect('teacher_detail', pk=teacher.pk)  # 'teacher_detail' - o'qituvchining batafsil sahifasi
+    else:
+        form = TeacherForm(instance=teacher)
+    return render(request, 'ubdateteacher.html', {'form': form})
+
+
+def delete_teacher(request, pk):
+    teacher = get_object_or_404(Teachers, pk=pk)
+    if request.method == 'POST':
+        teacher.delete()
+        return redirect('teacher_list')  # 'teacher_list' - o'qituvchilar ro'yxati sahifasi
+    return render(request, 'deleteteacher.html', {'teacher': teacher})
+
+
+
