@@ -4,53 +4,57 @@ from django.contrib import messages
 from django.contrib import auth
 from home.models import Teachers
 from .forms import TeacherForm
+from django.utils.datastructures import MultiValueDictKeyError
+from django.contrib.auth.decorators import login_required
 
 
-
+@login_required()
 def teacher(request):
-    return render(request, 'teacher.html')
+    teach = Teachers.objects.all()
+    return render(request, 'teacher.html', {"teach": teach})
 
 
 def login(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = auth.authenticate(username=username, password=password)
+        try:
+            username = request.POST['username']
+            password1 = request.POST['password1']
+        except MultiValueDictKeyError:
+            messages.info(request, 'Please provide both username and password')
+            return redirect('home')
+        user = auth.authenticate(username=username, password=password1)
         if user is not None:
             auth.login(request, user)
-            return redirect(" ")
+            return redirect('home')
         else:
-            messages.info(request, 'invalid credentials')
+            messages.info(request, 'Invalid credentials')
             return redirect('login')
     else:
         return render(request, 'auth/login.html')
 
 
 def register(request):
-    if request.method=='POST':
-        first_name=request.POST['first_name']
-        last_name=request.POST['last_name']
-        username=request.POST['username']
-        password1=request.POST['password1']
-        password2=request.POST['password2']
-        email=request.POST['email']
-        if password1==password2:
-            if User.objects.filter(email=email).exists():
-                messages.info(request,'Email Taken')
-                return redirect('register')
-            elif User.objects.filter(username=username).exists():
-                messages.info(request,'Username Taken')
+    if request.method == 'POST':
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        username = request.POST['username']
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+        email = request.POST['email']
+        if password1 == password2:
+            if User.objects.filter(username=username).exists():
+                messages.info(request, 'Username Taken')
                 return redirect('register')
             else:
-                user=User.objects.create_user(username=username,password=password1,email=email,first_name=first_name,last_name=last_name)
+                user = User.objects.create_user(username=username, password=password1, email=email,  first_name=first_name,  last_name=last_name)
                 user.save()
                 print('user created')
                 return redirect('login')
         else:
-            messages.info(request,"Password don't match!")
+            messages.info(request, "Password don't match!")
             return redirect('register')
     else:
-        return render(request,"auth/regester.html")
+        return render(request, "auth/regester.html")
 
 
 def create_teacher(request):

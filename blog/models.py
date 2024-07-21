@@ -21,7 +21,6 @@ class Blog(models.Model):
     description = models.TextField()
     img = models.ImageField(upload_to="blog/blog")
     status = models.CharField(max_length=4, choices=Status.choices, default=Status.PUBLISH)
-    comments = models.ManyToManyField(Commints, null=True)
     published_date = models.DateTimeField(default=timezone.now())
     updated_date = models.DateTimeField(auto_now_add=True)
 

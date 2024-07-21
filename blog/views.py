@@ -5,20 +5,15 @@ from .forms import BlogForm
 
 def blog(request):
     blogs = Blog.objects.all()
-    context = {'blogs': blogs}
-    return render(request, 'blog.html', context)
+    categories = Categore.objects.all()
+    context = {'blogs': blogs, 'categories': categories}
+    return render(request, 'blog.html', context=context)
 
 
 def commints(request):
     commit = Commints.objects.all()
     context = {'commit': commit}
-    return render(request, 'commints.html', context)
-
-
-def categories(request):
-    categories = Categore.objects.all()
-    context = {'categories': categories}
-    return render(request, 'categories.html', context)
+    return render(request, 'commints.html', context=context)
 
 
 def blogdetailviwe(request, id):

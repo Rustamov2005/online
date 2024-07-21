@@ -2,22 +2,17 @@ from django.shortcuts import render
 from .models import Subjects, Courses, Teachers, Speciality
 
 
-def subjectsviwe(request):
+def spesialetyviwe(request):
     speciality = Speciality.objects.all()
-    subjects = Subjects.objects.all()
-    courses = Courses.objects.all()
-    teachers = Teachers.objects.all()
-    context = {
-        'subjects': subjects,
-        'speciality': speciality,
-        'courses': courses,
-        'teachers': teachers
-    }
-    return render(request, 'index.html', context)
+    context = {'speciality': speciality}
+    return render(request, 'index.html', context=context)
 
 
 def home(request):
-    return render(request, 'index.html')
+    teach = Teachers.objects.all()
+    course = Courses.objects.all()
+    subjects = Subjects.objects.all()
+    return render(request, 'index.html', {'teachers': teach, 'course': course, 'subs': subjects})
 
 
 

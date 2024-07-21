@@ -18,6 +18,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_URL = 'login'
+
 
 # Application definition
 
@@ -35,6 +37,7 @@ INSTALLED_APPS = [
     'teacher',
     'blog',
     'contact',
+    'spesialety',
 ]
 
 MIDDLEWARE = [
